@@ -13,6 +13,16 @@ import (
 	"github.com/astaxie/beego/grace"
 )
 
+const (
+	// VERSION represent beego web framework version.
+	VERSION = "1.9.0"
+
+	// DEV is for develop
+	DEV = "dev"
+	// PROD is for production
+	PROD = "prod"
+)
+
 var (
 	// BeeApp is an application instance
 	BeeApp *App
@@ -47,21 +57,6 @@ func (app *App) Run() {
 				logs.Critical("Cannot use FCGI via standard I/O", err)
 			}
 			return
-		}
-		if BConfig.Listen.HTTPPort == 0 {
-			// remove the Socket file before start
-			if utils.FileExists(addr) {
-				os.Remove(addr)
-			}
-			l, err = net.Listen("unix", addr)
-		} else {
-			l, err = net.Listen("tcp", addr)
-		}
-		if err != nil {
-			logs.Critical("Listen: ", err)
-		}
-		if err = fcgi.Serve(l, app.Handlers); err != nil {
-			logs.Critical("fcgi.Serve: ", err)
 		}
 		return
 	}
@@ -111,24 +106,6 @@ func (app *App) Run() {
 		return
 	}
 
-	// run normal mode
-	if BConfig.Listen.EnableHTTPS {
-		go func() {
-			time.Sleep(20 * time.Microsecond)
-			if BConfig.Listen.HTTPSPort != 0 {
-				app.Server.Addr = fmt.Sprintf("%s:%d", BConfig.Listen.HTTPSAddr, BConfig.Listen.HTTPSPort)
-			} else if BConfig.Listen.EnableHTTP {
-				BeeLogger.Info("Start https server error, confict with http.Please reset https port")
-				return
-			}
-			logs.Info("https server Running on https111://%s", app.Server.Addr)
-			if err := app.Server.ListenAndServeTLS(BConfig.Listen.HTTPSCertFile, BConfig.Listen.HTTPSKeyFile); err != nil {
-				logs.Critical("ListenAndServeTLS: ", err)
-				time.Sleep(100 * time.Microsecond)
-				endRunning <- true
-			}
-		}()
-	}
 	if BConfig.Listen.EnableHTTP {
 		go func() {
 			app.Server.Addr = addr
