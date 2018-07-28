@@ -3,14 +3,42 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"xapi/app/controllers"
+	"os"
+	"io"
+	"xapi/tools"
 )
 
 var DB = make(map[string]string)
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
-	router.GET("getWorkOrders", controllers.GetOrders)
 
+	gin.DisableConsoleColor()
+	f, _ := os.Create("gin.log")
+	gin.DefaultErrorWriter = io.MultiWriter(f)
+	//gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+	//router.Use(gin.Logger())
+
+	router.GET("/test", func(context *gin.Context) {
+		logger := new(tools.Logger)
+		logger.InitLogger()
+		logger.Error("hello logger")
+	})
+
+	admin := router.Group("/admin")
+	{
+		router.GET("getWorkOrders", controllers.GetOrders)
+
+		admin.POST("/post", func(context *gin.Context) {
+			message := context.PostForm("message")
+			nick := context.DefaultPostForm("nick", "anonymous")
+			context.JSON(200, map[string]string{
+				"status": "posted",
+				"message": message,
+				"nick": nick,
+			})
+		})
+	}
 	return router
 }
 
