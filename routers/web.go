@@ -5,24 +5,25 @@ import (
 	"xapi/app/controllers"
 	"os"
 	"io"
-	"xapi/tools"
 )
 
 var DB = make(map[string]string)
 
 func InitRouter() *gin.Engine {
-	router := gin.Default()
+	//router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Recovery())
 
 	gin.DisableConsoleColor()
-	f, _ := os.Create("gin.log")
+	f, _ := os.Create("storage/log/gin.log")
 	gin.DefaultErrorWriter = io.MultiWriter(f)
-	//gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
-	//router.Use(gin.Logger())
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+	router.Use(gin.Logger())
 
 	router.GET("/test", func(context *gin.Context) {
-		logger := new(tools.Logger)
-		logger.InitLogger()
-		logger.Error("hello logger")
+		//logger := new(tools.Logger)
+		//logger.InitLogger()
+		//logger.Info("hello logger-info")
 	})
 
 	admin := router.Group("/admin")
