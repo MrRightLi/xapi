@@ -43,7 +43,7 @@ func InitRouter() *gin.Engine {
 	return router
 }
 
-func setupRouter() *gin.Engine {
+func routerdemo() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
