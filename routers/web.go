@@ -18,7 +18,8 @@ func InitRouter() *gin.Engine {
 	router.Use(gin.Recovery())
 	gin.DisableConsoleColor()
 	f, _ := os.Create("storage/log/gin.log")
-	gin.DefaultErrorWriter = io.MultiWriter(f)
+	//gin.DefaultErrorWriter = io.MultiWriter(f)
+	// Use the following code if you need to write the logs to file and console at the same time.
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 	router.Use(gin.Logger())
 

@@ -15,7 +15,7 @@ var ORM *xorm.Engine
 
 func init() {
 	conf := new(config.Yaml)
-	yamlFile, err := ioutil.ReadFile("config/test.yaml")
+	yamlFile, err := ioutil.ReadFile("config/database/mysql.yaml")
 	if err != nil {
 		log.Fatalf("yamlFile.Get err: %v", err)
 	}
