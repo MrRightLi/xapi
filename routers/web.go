@@ -6,12 +6,14 @@ import (
 	"os"
 	"io"
 	"xapi/tools"
+	"xapi/config"
+	"io/ioutil"
+	"gopkg.in/yaml.v2"
 )
 
 var DB = make(map[string]string)
 
 func InitRouter() *gin.Engine {
-	//router := gin.Default()
 	router := gin.New()
 	router.Use(gin.Recovery())
 	gin.DisableConsoleColor()
@@ -20,15 +22,9 @@ func InitRouter() *gin.Engine {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 	router.Use(gin.Logger())
 
-	router.GET("/test", func(context *gin.Context) {
-		logger := new(tools.Logger)
-		logger.InitLogger()
-		logger.Info("hello logger-info")
-	})
-
 	admin := router.Group("/admin")
 	{
-		router.GET("getWorkOrders", controllers.GetOrders)
+		admin.GET("/getWorkOrders", controllers.GetOrders)
 
 		admin.POST("/post", func(context *gin.Context) {
 			message := context.PostForm("message")
@@ -38,6 +34,26 @@ func InitRouter() *gin.Engine {
 				"message": message,
 				"nick":    nick,
 			})
+		})
+	}
+
+	test := router.Group("test")
+	{
+		test.GET("/ymal", func(context *gin.Context) {
+			logger := new(tools.Logger)
+			logger.InitLogger()
+			logger.Info("hello logger-info")
+
+			conf := new(config.Yaml)
+			yamlFile, err := ioutil.ReadFile("config/test.yaml")
+			if err != nil {
+				logger.Error("yamlFile.Get err")
+			}
+			err = yaml.Unmarshal(yamlFile, conf)
+			if err != nil {
+				logger.Error("Unmarshal: %v")
+			}
+			context.JSON(200, gin.H{"User": conf.Mysql.User})
 		})
 	}
 	return router
