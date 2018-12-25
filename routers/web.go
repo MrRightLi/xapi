@@ -25,6 +25,7 @@ func InitRouter() *gin.Engine {
 
 	admin := router.Group("/admin")
 	{
+		admin.POST("/test", controllers.Test)
 		admin.GET("/getWorkOrders", controllers.GetOrders)
 
 		admin.POST("/post", func(context *gin.Context) {
@@ -55,6 +56,12 @@ func InitRouter() *gin.Engine {
 				logger.Error("Unmarshal: %v")
 			}
 			context.JSON(200, gin.H{"User": conf.Mysql.User})
+		})
+		test.GET("/test", func(context *gin.Context) {
+			response := gin.H{
+				"test": 1,
+			}
+			context.JSON(200, response)
 		})
 	}
 	return router
