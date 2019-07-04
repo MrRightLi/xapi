@@ -11,3 +11,9 @@ func GetOrders(context *gin.Context) {
 
 	context.JSON(http.StatusOK, results)
 }
+
+func GetTasks(context *gin.Context) {
+	results := models.TastList()
+
+	context.JSON(http.StatusOK, results)
+}

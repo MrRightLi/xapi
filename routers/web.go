@@ -27,6 +27,7 @@ func InitRouter() *gin.Engine {
 	{
 		admin.POST("/test", controllers.Test)
 		admin.GET("/getWorkOrders", controllers.GetOrders)
+		admin.GET("/getRepairTasks", controllers.GetTasks)
 
 		admin.POST("/post", func(context *gin.Context) {
 			message := context.PostForm("message")

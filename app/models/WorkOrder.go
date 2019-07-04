@@ -13,3 +13,9 @@ func OrderList() []map[string]string {
 
 	return orders
 }
+
+func TastList() []map[string]string {
+	tasks, _ := ORM.QueryString("select * from repair_tasks limit 20")
+
+	return tasks
+}

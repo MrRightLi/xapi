@@ -23,10 +23,10 @@ func init() {
 	if err != nil {
 		log.Fatalf("Unmarshal: %v", err)
 	}
-	startMysql(conf.Mysql.User, conf.Mysql.Password, conf.Mysql.Host, conf.Mysql.Port, conf.Mysql.Name)
+	startDefault(conf.Mysql.User, conf.Mysql.Password, conf.Mysql.Host, conf.Mysql.Port, conf.Mysql.Name)
 }
 
-func startMysql(root string, password string, host string, port string, db string)  {
+func startDefault(root string, password string, host string, port string, db string)  {
 	//ORM, err := xorm.NewEngine("mysql", "root:123456@tcp(127.0.0.1:3306)/serviceplat?charset=utf8")
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8", root, password, host, port, db)
 	log.Println(dataSourceName)
