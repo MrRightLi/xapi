@@ -2,6 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"net"
 	"xapi/app/controllers"
 	"os"
 	"io"
@@ -61,6 +62,21 @@ func InitRouter() *gin.Engine {
 		test.GET("/test", func(context *gin.Context) {
 			response := gin.H{
 				"test": 1,
+			}
+			context.JSON(200, response)
+		})
+		test.GET("/ip", func(context *gin.Context) {
+			addrs, _ := net.InterfaceAddrs()
+			var gInnerIp []string
+			for _, address := range addrs {
+				if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+					if ipnet.IP.To4() != nil {
+						gInnerIp = append(gInnerIp, ipnet.IP.String())
+					}
+				}
+			}
+			response := gin.H{
+				"ipv4: ": gInnerIp,
 			}
 			context.JSON(200, response)
 		})
