@@ -2,14 +2,15 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"net"
-	"xapi/app/controllers"
-	"os"
-	"io"
-	"xapi/tools"
-	"xapi/config"
-	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	"io"
+	"io/ioutil"
+	"log"
+	"net"
+	"os"
+	"xapi/app/controllers"
+	"xapi/config"
+	"xapi/tools"
 )
 
 var DB = make(map[string]string)
@@ -79,6 +80,19 @@ func InitRouter() *gin.Engine {
 				"ipv4: ": gInnerIp,
 			}
 			context.JSON(200, response)
+		})
+		test.POST("/logs", func(context *gin.Context) {
+			data, _ := ioutil.ReadAll(context.Request.Body)
+			log.Printf("ctx.Request.body: %v", string(data))
+
+			//context.Request.ParseForm()
+			//for k, v := range context.Request.PostForm {"
+			//	log.Printf("k:%v\n", k)
+			//	log.Printf("v:%v\n", v)
+			//}
+
+			context.JSON(200, map[string]string{
+			})
 		})
 	}
 	return router
