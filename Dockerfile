@@ -1,4 +1,4 @@
-FROM golang:1.9
+FROM golang:1.14
 
 WORKDIR $GOPATH/src/xapi
 
